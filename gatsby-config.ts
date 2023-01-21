@@ -3,12 +3,21 @@ import "dotenv/config"
 import type { GatsbyConfig } from "gatsby";
 import { DB_PORT } from "./src/constants";
 
-const config: GatsbyConfig = {
-  siteMetadata: {
-    title: `leahin.blog`,
-    siteUrl: `https://www.yourdomain.tld`
+const siteMetadata = {
+  siteUrl: `https://www.yourdomain.tld`,
+  siteName: `leahin.blog`,
+  title: `leahin.blog`,
+  description: `nou`,
+  author: {
+    name: `JungHyunLah`,
+    summary: `Software Engineer`,
   },
+}
+
+const config: GatsbyConfig = {
+  jsxRuntime: "automatic",
   graphqlTypegen: true,
+  siteMetadata,
   plugins: ["gatsby-plugin-vanilla-extract", "gatsby-plugin-mdx", "gatsby-plugin-sharp", "gatsby-transformer-sharp", "gatsby-plugin-image", "gatsby-plugin-sitemap", 
   {
     resolve: "gatsby-plugin-google-tagmanager",
@@ -20,14 +29,14 @@ const config: GatsbyConfig = {
   {
     resolve: 'gatsby-plugin-manifest',
     options: {
-      "icon": "src/images/icon.png"
+      "icon": "./src/assets/images/icon.png"
     }
   },
   {
     resolve: 'gatsby-source-filesystem',
     options: {
       "name": "images",
-      "path": "./src/images/"
+      "path": "./src/assets/images/"
     },
     __key: "images"
   },
