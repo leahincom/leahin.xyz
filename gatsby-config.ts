@@ -59,6 +59,12 @@ const config: GatsbyConfig = {
           retryWrites: true
       }
     }
+  },
+  {
+    resolve: "gatsby-plugin-seed-design",
+    options: {
+      mode: "light-only",
+    },
   }]
 };
 

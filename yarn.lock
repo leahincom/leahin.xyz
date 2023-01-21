@@ -1846,6 +1846,23 @@
     "@pnpm/network.ca-file" "^1.0.1"
     config-chain "^1.1.11"
 
+"@seed-design/design-token@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@seed-design/design-token/-/design-token-1.0.0.tgz#b0c22625dbe80e0fddeaa10736e49bcf1c7cda34"
+  integrity sha512-r16OGzctTUQExPkMDuxrgYgBF7SrydnzCJ5pzA7x0U+sJTWqKTGkTTGYONe+/DyzoPlirrcm3apj89aDdN5rGw==
+
+"@seed-design/react-theming@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@seed-design/react-theming/-/react-theming-2.1.2.tgz#bbfca5a12b24dcb33614566ae7b2e931e04a9da8"
+  integrity sha512-H2aLv2Pe5Lx17Hdgnm1+Oz2YPcmfRZACuu8JaPnhLNHqHEChdOxtvY/yVlMRwoUUqO90tyeGHvNlx/I/BLqIiQ==
+  dependencies:
+    "@seed-design/design-token" "^1.0.0"
+
+"@seed-design/stylesheet@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@seed-design/stylesheet/-/stylesheet-1.0.3.tgz#e4e26c9aca5b3c2c1346737c1161fe89a8176f22"
+  integrity sha512-J8vpyiD4vBwOaAk2z3FYIcUzDwpDfOeO78EN9il2COBNoFKOSN7IZW5Y0GwemrXK369qFGARXmuF8iOITUuVYg==
+
 "@sideway/address@^4.1.3":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.4.tgz#03dccebc6ea47fdc226f7d3d1ad512955d4783f0"
@@ -5413,6 +5430,14 @@ gatsby-plugin-page-creator@^5.4.0:
     gatsby-telemetry "^4.4.0"
     globby "^11.1.0"
     lodash "^4.17.21"
+
+gatsby-plugin-seed-design@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-seed-design/-/gatsby-plugin-seed-design-0.2.5.tgz#9863835d8f71af433e59b582eb62316b228f54ad"
+  integrity sha512-uucCDhye9MbMWp4/sRNJ+Qpn5hEk0hXmtXLVatLTWPI2nGe03c0p40kUeNOAw50+GMIY76c5wB7JY02W3jbICg==
+  dependencies:
+    "@seed-design/react-theming" "^2.1.2"
+    "@seed-design/stylesheet" "^1.0.3"
 
 gatsby-plugin-sharp@^5.4.0:
   version "5.4.0"
