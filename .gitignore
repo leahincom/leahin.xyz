@@ -1,6 +1,8 @@
+.env
+
 node_modules/
 .cache/
+yarn-error.log
+
 public
 src/gatsby-types.d.ts
-
-.env
