@@ -62,5 +62,10 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: [".eslintrc.js", "public/**/*"],
+  ignorePatterns: [
+    ".eslintrc.js",
+    "**/__generated__/**/*",
+    "public/**/*",
+    "**/*.graphql",
+  ],
 };
