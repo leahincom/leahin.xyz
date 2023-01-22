@@ -1,12 +1,9 @@
 module.exports = {
   root: true,
   extends: [
-    "airbnb-typescript",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
-    "plugin:import/recommended",
-    "plugin:jsx-a11y/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -15,9 +12,9 @@ module.exports = {
   plugins: [
     "@typescript-eslint",
     "react-hooks",
-    "airbnb-typescript",
     "prettier",
     "json-format",
+    "import",
     "simple-import-sort",
   ],
   rules: {
@@ -65,5 +62,5 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: ["public/**/*"],
+  ignorePatterns: [".eslintrc.js", "public/**/*"],
 };
