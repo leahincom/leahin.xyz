@@ -470,10 +470,18 @@ type File implements Node {
   Returns the first child node of type ImageSharp or null if there are no children of given type on this node
   """
   childImageSharp: ImageSharp
+
+  """
+  Returns the first child node of type Mdx or null if there are no children of given type on this node
+  """
+  childMdx: Mdx
   children: [Node!]!
 
   """Returns all children nodes filtered by type ImageSharp"""
   childrenImageSharp: [ImageSharp]
+
+  """Returns all children nodes filtered by type Mdx"""
+  childrenMdx: [Mdx]
   ctime(
     """
     Returns the difference between this date and the current time. Defaults to "milliseconds" but you can also pass in as the measurement "years", "months", "weeks", "days", "hours", "minutes", and "seconds".
@@ -583,8 +591,10 @@ input FileFieldSelector {
   blocks: FieldSelectorEnum
   changeTime: FieldSelectorEnum
   childImageSharp: ImageSharpFieldSelector
+  childMdx: MdxFieldSelector
   children: NodeFieldSelector
   childrenImageSharp: ImageSharpFieldSelector
+  childrenMdx: MdxFieldSelector
   ctime: FieldSelectorEnum
   ctimeMs: FieldSelectorEnum
   dev: FieldSelectorEnum
@@ -626,8 +636,10 @@ input FileFilterInput {
   blocks: IntQueryOperatorInput
   changeTime: DateQueryOperatorInput
   childImageSharp: ImageSharpFilterInput
+  childMdx: MdxFilterInput
   children: NodeFilterListInput
   childrenImageSharp: ImageSharpFilterListInput
+  childrenMdx: MdxFilterListInput
   ctime: DateQueryOperatorInput
   ctimeMs: FloatQueryOperatorInput
   dev: IntQueryOperatorInput
@@ -683,8 +695,10 @@ input FileSortInput {
   blocks: SortOrderEnum
   changeTime: SortOrderEnum
   childImageSharp: ImageSharpSortInput
+  childMdx: MdxSortInput
   children: NodeSortInput
   childrenImageSharp: ImageSharpSortInput
+  childrenMdx: MdxSortInput
   ctime: SortOrderEnum
   ctimeMs: SortOrderEnum
   dev: SortOrderEnum
@@ -1261,8 +1275,10 @@ input JSONQueryOperatorInput {
 }
 
 type Mdx implements Node {
+  body: String
   children: [Node!]!
   excerpt(pruneLength: Int = 140): String
+  frontmatter: MdxFrontmatter
   id: ID!
   internal: Internal!
   parent: Node
@@ -1288,8 +1304,10 @@ type MdxEdge {
 }
 
 input MdxFieldSelector {
+  body: FieldSelectorEnum
   children: NodeFieldSelector
   excerpt: FieldSelectorEnum
+  frontmatter: MdxFrontmatterFieldSelector
   id: FieldSelectorEnum
   internal: InternalFieldSelector
   parent: NodeFieldSelector
@@ -1297,12 +1315,62 @@ input MdxFieldSelector {
 }
 
 input MdxFilterInput {
+  body: StringQueryOperatorInput
   children: NodeFilterListInput
   excerpt: StringQueryOperatorInput
+  frontmatter: MdxFrontmatterFilterInput
   id: StringQueryOperatorInput
   internal: InternalFilterInput
   parent: NodeFilterInput
   tableOfContents: JSONQueryOperatorInput
+}
+
+input MdxFilterListInput {
+  elemMatch: MdxFilterInput
+}
+
+type MdxFrontmatter {
+  date(
+    """
+    Returns the difference between this date and the current time. Defaults to "milliseconds" but you can also pass in as the measurement "years", "months", "weeks", "days", "hours", "minutes", and "seconds".
+    """
+    difference: String
+
+    """
+    Format the date using Moment.js' date tokens, e.g. `date(formatString: "YYYY MMMM DD")`. See https://momentjs.com/docs/#/displaying/format/ for documentation for different tokens.
+    """
+    formatString: String
+
+    """Returns a string generated with Moment.js' `fromNow` function"""
+    fromNow: Boolean
+
+    """Configures the locale Moment.js will use to format the date."""
+    locale: String
+  ): Date
+  published: Boolean
+  slug: String
+  title: String
+}
+
+input MdxFrontmatterFieldSelector {
+  date: FieldSelectorEnum
+  published: FieldSelectorEnum
+  slug: FieldSelectorEnum
+  title: FieldSelectorEnum
+}
+
+input MdxFrontmatterFilterInput {
+  date: DateQueryOperatorInput
+  published: BooleanQueryOperatorInput
+  slug: StringQueryOperatorInput
+  title: StringQueryOperatorInput
+}
+
+input MdxFrontmatterSortInput {
+  date: SortOrderEnum
+  published: SortOrderEnum
+  slug: SortOrderEnum
+  title: SortOrderEnum
 }
 
 type MdxGroupConnection {
@@ -1320,8 +1388,10 @@ type MdxGroupConnection {
 }
 
 input MdxSortInput {
+  body: SortOrderEnum
   children: NodeSortInput
   excerpt: SortOrderEnum
+  frontmatter: MdxFrontmatterSortInput
   id: SortOrderEnum
   internal: InternalSortInput
   parent: NodeSortInput
@@ -1408,9 +1478,9 @@ type Query {
   allSiteFunction(filter: SiteFunctionFilterInput, limit: Int, skip: Int, sort: [SiteFunctionSortInput]): SiteFunctionConnection!
   allSitePage(filter: SitePageFilterInput, limit: Int, skip: Int, sort: [SitePageSortInput]): SitePageConnection!
   directory(absolutePath: StringQueryOperatorInput, accessTime: DateQueryOperatorInput, atime: DateQueryOperatorInput, atimeMs: FloatQueryOperatorInput, base: StringQueryOperatorInput, birthTime: DateQueryOperatorInput, birthtime: DateQueryOperatorInput, birthtimeMs: FloatQueryOperatorInput, changeTime: DateQueryOperatorInput, children: NodeFilterListInput, ctime: DateQueryOperatorInput, ctimeMs: FloatQueryOperatorInput, dev: IntQueryOperatorInput, dir: StringQueryOperatorInput, ext: StringQueryOperatorInput, extension: StringQueryOperatorInput, gid: IntQueryOperatorInput, id: StringQueryOperatorInput, ino: FloatQueryOperatorInput, internal: InternalFilterInput, mode: IntQueryOperatorInput, modifiedTime: DateQueryOperatorInput, mtime: DateQueryOperatorInput, mtimeMs: FloatQueryOperatorInput, name: StringQueryOperatorInput, nlink: IntQueryOperatorInput, parent: NodeFilterInput, prettySize: StringQueryOperatorInput, rdev: IntQueryOperatorInput, relativeDirectory: StringQueryOperatorInput, relativePath: StringQueryOperatorInput, root: StringQueryOperatorInput, size: IntQueryOperatorInput, sourceInstanceName: StringQueryOperatorInput, uid: IntQueryOperatorInput): Directory
-  file(absolutePath: StringQueryOperatorInput, accessTime: DateQueryOperatorInput, atime: DateQueryOperatorInput, atimeMs: FloatQueryOperatorInput, base: StringQueryOperatorInput, birthTime: DateQueryOperatorInput, birthtime: DateQueryOperatorInput, birthtimeMs: FloatQueryOperatorInput, blksize: IntQueryOperatorInput, blocks: IntQueryOperatorInput, changeTime: DateQueryOperatorInput, childImageSharp: ImageSharpFilterInput, children: NodeFilterListInput, childrenImageSharp: ImageSharpFilterListInput, ctime: DateQueryOperatorInput, ctimeMs: FloatQueryOperatorInput, dev: IntQueryOperatorInput, dir: StringQueryOperatorInput, ext: StringQueryOperatorInput, extension: StringQueryOperatorInput, gid: IntQueryOperatorInput, id: StringQueryOperatorInput, ino: FloatQueryOperatorInput, internal: InternalFilterInput, mode: IntQueryOperatorInput, modifiedTime: DateQueryOperatorInput, mtime: DateQueryOperatorInput, mtimeMs: FloatQueryOperatorInput, name: StringQueryOperatorInput, nlink: IntQueryOperatorInput, parent: NodeFilterInput, prettySize: StringQueryOperatorInput, publicURL: StringQueryOperatorInput, rdev: IntQueryOperatorInput, relativeDirectory: StringQueryOperatorInput, relativePath: StringQueryOperatorInput, root: StringQueryOperatorInput, size: IntQueryOperatorInput, sourceInstanceName: StringQueryOperatorInput, uid: IntQueryOperatorInput): File
+  file(absolutePath: StringQueryOperatorInput, accessTime: DateQueryOperatorInput, atime: DateQueryOperatorInput, atimeMs: FloatQueryOperatorInput, base: StringQueryOperatorInput, birthTime: DateQueryOperatorInput, birthtime: DateQueryOperatorInput, birthtimeMs: FloatQueryOperatorInput, blksize: IntQueryOperatorInput, blocks: IntQueryOperatorInput, changeTime: DateQueryOperatorInput, childImageSharp: ImageSharpFilterInput, childMdx: MdxFilterInput, children: NodeFilterListInput, childrenImageSharp: ImageSharpFilterListInput, childrenMdx: MdxFilterListInput, ctime: DateQueryOperatorInput, ctimeMs: FloatQueryOperatorInput, dev: IntQueryOperatorInput, dir: StringQueryOperatorInput, ext: StringQueryOperatorInput, extension: StringQueryOperatorInput, gid: IntQueryOperatorInput, id: StringQueryOperatorInput, ino: FloatQueryOperatorInput, internal: InternalFilterInput, mode: IntQueryOperatorInput, modifiedTime: DateQueryOperatorInput, mtime: DateQueryOperatorInput, mtimeMs: FloatQueryOperatorInput, name: StringQueryOperatorInput, nlink: IntQueryOperatorInput, parent: NodeFilterInput, prettySize: StringQueryOperatorInput, publicURL: StringQueryOperatorInput, rdev: IntQueryOperatorInput, relativeDirectory: StringQueryOperatorInput, relativePath: StringQueryOperatorInput, root: StringQueryOperatorInput, size: IntQueryOperatorInput, sourceInstanceName: StringQueryOperatorInput, uid: IntQueryOperatorInput): File
   imageSharp(children: NodeFilterListInput, fixed: ImageSharpFixedFilterInput, fluid: ImageSharpFluidFilterInput, gatsbyImageData: GatsbyImageDataQueryOperatorInput, id: StringQueryOperatorInput, internal: InternalFilterInput, original: ImageSharpOriginalFilterInput, parent: NodeFilterInput, resize: ImageSharpResizeFilterInput): ImageSharp
-  mdx(children: NodeFilterListInput, excerpt: StringQueryOperatorInput, id: StringQueryOperatorInput, internal: InternalFilterInput, parent: NodeFilterInput, tableOfContents: JSONQueryOperatorInput): Mdx
+  mdx(body: StringQueryOperatorInput, children: NodeFilterListInput, excerpt: StringQueryOperatorInput, frontmatter: MdxFrontmatterFilterInput, id: StringQueryOperatorInput, internal: InternalFilterInput, parent: NodeFilterInput, tableOfContents: JSONQueryOperatorInput): Mdx
   mongodbBlogPosts(category: StringQueryOperatorInput, children: NodeFilterListInput, content: StringQueryOperatorInput, id: StringQueryOperatorInput, internal: InternalFilterInput, mongodb_id: StringQueryOperatorInput, parent: NodeFilterInput, publishedAt: DateQueryOperatorInput, status: StringQueryOperatorInput, summary: StringQueryOperatorInput, tags: StringQueryOperatorInput, thumbnailUrl: StringQueryOperatorInput, title: StringQueryOperatorInput): mongodbBlogPosts
   site(buildTime: DateQueryOperatorInput, children: NodeFilterListInput, graphqlTypegen: SiteGraphqlTypegenFilterInput, id: StringQueryOperatorInput, internal: InternalFilterInput, jsxRuntime: StringQueryOperatorInput, parent: NodeFilterInput, pathPrefix: StringQueryOperatorInput, polyfill: BooleanQueryOperatorInput, siteMetadata: SiteSiteMetadataFilterInput, trailingSlash: StringQueryOperatorInput): Site
   siteBuildMetadata(buildTime: DateQueryOperatorInput, children: NodeFilterListInput, id: StringQueryOperatorInput, internal: InternalFilterInput, parent: NodeFilterInput): SiteBuildMetadata
