@@ -10,6 +10,7 @@
   "scripts": {
     "build": "gatsby build",
     "clean": "gatsby clean",
+    "commit:build": "git restore --staged :/ && git add **/__generated__/** && git commit -m \":bento: build artifacts\"",
     "dev": "gatsby develop",
     "prepare": "husky install",
     "serve": "gatsby serve",
