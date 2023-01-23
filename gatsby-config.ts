@@ -50,10 +50,11 @@ const config: GatsbyConfig = {
     {
       resolve: "gatsby-source-filesystem",
       options: {
-        name: "pages",
-        path: "./src/pages/",
+        name: "posts",
+        path: `${__dirname}/posts/`,
+        ignore: [`**/\.*`],
       },
-      __key: "pages",
+      __key: "posts",
     },
     {
       resolve: "gatsby-source-mongodb",
