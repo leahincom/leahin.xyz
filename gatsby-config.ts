@@ -17,7 +17,9 @@ const siteMetadata = {
 
 const config: GatsbyConfig = {
   jsxRuntime: "automatic",
-  graphqlTypegen: true,
+  graphqlTypegen: {
+    typesOutputPath: "./src/__generated__/gatsby-types.d.ts",
+  },
   siteMetadata,
   plugins: [
     "gatsby-plugin-vanilla-extract",
@@ -81,19 +83,6 @@ const config: GatsbyConfig = {
       resolve: "gatsby-plugin-seed-design",
       options: {
         mode: "light-only",
-      },
-    },
-    {
-      resolve: "gatsby-plugin-typegen",
-      options: {
-        outputPath: "src/__generated__/gatsby-types.d.ts",
-        emitSchema: {
-          "src/__generated__/gatsby-schema.graphql": true,
-          "src/__generated__/gatsby-introspection.json": true,
-        },
-        emitPluginDocuments: {
-          "src/__generated__/gatsby-plugin-documents.graphql": true,
-        },
       },
     },
   ],
