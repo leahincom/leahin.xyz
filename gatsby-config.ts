@@ -28,6 +28,7 @@ const config: GatsbyConfig = {
     "gatsby-transformer-sharp",
     "gatsby-plugin-image",
     "gatsby-plugin-sitemap",
+    "gatsby-plugin-head-seo",
     {
       resolve: "gatsby-plugin-google-tagmanager",
       options: {
