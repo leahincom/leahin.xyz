@@ -1,5 +1,6 @@
 import type { GatsbyNode } from "gatsby";
 import path from "path";
+import slugify from "slugify";
 
 export const createPages: GatsbyNode["createPages"] = async ({
   graphql,
@@ -15,7 +16,6 @@ export const createPages: GatsbyNode["createPages"] = async ({
           id
           frontmatter {
             title
-            slug
           }
         }
       }
@@ -37,9 +37,9 @@ export const createPages: GatsbyNode["createPages"] = async ({
     const next = idx >= posts.length - 1 ? null : posts[idx + 1];
 
     createPage({
-      path: post.frontmatter?.slug ?? "",
+      path: post.frontmatter ? `/${slugify(post.frontmatter.title!)}` : "/",
       component: path.resolve("src/templates/post.tsx"),
-      context: { id: post.id, slug: post.frontmatter?.slug, prev, next },
+      context: { id: post.id, prev, next },
     });
   });
 };
