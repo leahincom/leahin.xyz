@@ -1338,9 +1338,9 @@ type MdxFilterListInput = {
 };
 
 type MdxFrontmatter = {
+  readonly category: Maybe<Scalars['String']>;
   readonly date: Maybe<Scalars['Date']>;
   readonly published: Maybe<Scalars['Boolean']>;
-  readonly slug: Maybe<Scalars['String']>;
   readonly title: Maybe<Scalars['String']>;
 };
 
@@ -1353,23 +1353,23 @@ type MdxFrontmatter_dateArgs = {
 };
 
 type MdxFrontmatterFieldSelector = {
+  readonly category: InputMaybe<FieldSelectorEnum>;
   readonly date: InputMaybe<FieldSelectorEnum>;
   readonly published: InputMaybe<FieldSelectorEnum>;
-  readonly slug: InputMaybe<FieldSelectorEnum>;
   readonly title: InputMaybe<FieldSelectorEnum>;
 };
 
 type MdxFrontmatterFilterInput = {
+  readonly category: InputMaybe<StringQueryOperatorInput>;
   readonly date: InputMaybe<DateQueryOperatorInput>;
   readonly published: InputMaybe<BooleanQueryOperatorInput>;
-  readonly slug: InputMaybe<StringQueryOperatorInput>;
   readonly title: InputMaybe<StringQueryOperatorInput>;
 };
 
 type MdxFrontmatterSortInput = {
+  readonly category: InputMaybe<SortOrderEnum>;
   readonly date: InputMaybe<SortOrderEnum>;
   readonly published: InputMaybe<SortOrderEnum>;
-  readonly slug: InputMaybe<SortOrderEnum>;
   readonly title: InputMaybe<SortOrderEnum>;
 };
 
@@ -2803,7 +2803,7 @@ type GatsbyImageSharpFluidLimitPresentationSizeFragment = { readonly maxHeight: 
 type IndexPageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type IndexPageQuery = { readonly allMongodbBlogPosts: { readonly edges: ReadonlyArray<{ readonly node: { readonly title: string | null } }> } };
+type IndexPageQuery = { readonly allMongodbBlogPosts: { readonly edges: ReadonlyArray<{ readonly node: { readonly summary: string | null } }> } };
 
 type PagePostTemplateQueryQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2812,10 +2812,15 @@ type PagePostTemplateQueryQueryVariables = Exact<{
 
 type PagePostTemplateQueryQuery = { readonly mdx: { readonly body: string | null, readonly frontmatter: { readonly title: string | null } | null } | null };
 
+type useSiteMetadataQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+type useSiteMetadataQueryQuery = { readonly site: { readonly siteMetadata: { readonly title: string | null, readonly description: string | null, readonly siteUrl: string | null, readonly siteName: string | null, readonly author: { readonly name: string | null, readonly summary: string | null } | null } | null } | null };
+
 type BlogPostQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type BlogPostQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly id: string, readonly frontmatter: { readonly title: string | null, readonly slug: string | null } | null }> } };
+type BlogPostQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly id: string, readonly frontmatter: { readonly title: string | null } | null }> } };
 
 
 }
