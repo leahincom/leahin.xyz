@@ -22,11 +22,11 @@ const config: GatsbyConfig = {
   },
   siteMetadata,
   plugins: [
-    "gatsby-plugin-vanilla-extract",
     "gatsby-plugin-mdx",
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
     "gatsby-plugin-image",
+    "gatsby-theme-stitches",
     "gatsby-plugin-sitemap",
     "gatsby-plugin-head-seo",
     {
