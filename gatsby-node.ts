@@ -1,6 +1,32 @@
 import type { GatsbyNode } from "gatsby";
 import path from "path";
-import slugify from "slugify";
+
+import slugify from "./src/utils/slugify";
+
+export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
+  ({ actions }) => {
+    const { createTypes } = actions;
+
+    const gql = String.raw;
+    createTypes(gql`
+      type Mdx implements Node {
+        frontmatter: Frontmatter
+      }
+
+      enum CategoryEnum {
+        ABOUT
+        SNACKS
+        TECH
+      }
+
+      type Frontmatter {
+        published: Boolean!
+        title: String!
+        category: CategoryEnum!
+        tags: [String!]
+      }
+    `);
+  };
 
 export const createPages: GatsbyNode["createPages"] = async ({
   graphql,
@@ -15,7 +41,9 @@ export const createPages: GatsbyNode["createPages"] = async ({
         nodes {
           id
           frontmatter {
+            published
             title
+            category
           }
         }
       }
@@ -30,14 +58,16 @@ export const createPages: GatsbyNode["createPages"] = async ({
     throw new Error("post 쿼리에 데이터가 담겨오지 않았어요.");
   }
 
-  const posts = query.data.allMdx.nodes;
+  const posts = query.data.allMdx.nodes.filter(
+    (node) => !!node.frontmatter && node.frontmatter.published,
+  );
 
   posts.forEach((post, idx) => {
     const prev = idx === 0 ? null : posts[idx - 1];
     const next = idx >= posts.length - 1 ? null : posts[idx + 1];
 
     createPage({
-      path: post.frontmatter ? `/${slugify(post.frontmatter.title!)}` : "/",
+      path: slugify(post.frontmatter!.category, post.frontmatter!.title),
       component: path.resolve("src/templates/post.tsx"),
       context: { id: post.id, prev, next },
     });

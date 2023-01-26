@@ -48,6 +48,18 @@ type BooleanQueryOperatorInput = {
   readonly nin: InputMaybe<ReadonlyArray<InputMaybe<Scalars['Boolean']>>>;
 };
 
+type CategoryEnum =
+  | 'ABOUT'
+  | 'SNACKS'
+  | 'TECH';
+
+type CategoryEnumQueryOperatorInput = {
+  readonly eq: InputMaybe<CategoryEnum>;
+  readonly in: InputMaybe<ReadonlyArray<InputMaybe<CategoryEnum>>>;
+  readonly ne: InputMaybe<CategoryEnum>;
+  readonly nin: InputMaybe<ReadonlyArray<InputMaybe<CategoryEnum>>>;
+};
+
 type DateQueryOperatorInput = {
   readonly eq: InputMaybe<Scalars['Date']>;
   readonly gt: InputMaybe<Scalars['Date']>;
@@ -704,6 +716,46 @@ type FloatQueryOperatorInput = {
   readonly nin: InputMaybe<ReadonlyArray<InputMaybe<Scalars['Float']>>>;
 };
 
+type Frontmatter = {
+  readonly category: CategoryEnum;
+  readonly date: Maybe<Scalars['Date']>;
+  readonly published: Scalars['Boolean'];
+  readonly tags: Maybe<ReadonlyArray<Scalars['String']>>;
+  readonly title: Scalars['String'];
+};
+
+
+type Frontmatter_dateArgs = {
+  difference: InputMaybe<Scalars['String']>;
+  formatString: InputMaybe<Scalars['String']>;
+  fromNow: InputMaybe<Scalars['Boolean']>;
+  locale: InputMaybe<Scalars['String']>;
+};
+
+type FrontmatterFieldSelector = {
+  readonly category: InputMaybe<FieldSelectorEnum>;
+  readonly date: InputMaybe<FieldSelectorEnum>;
+  readonly published: InputMaybe<FieldSelectorEnum>;
+  readonly tags: InputMaybe<FieldSelectorEnum>;
+  readonly title: InputMaybe<FieldSelectorEnum>;
+};
+
+type FrontmatterFilterInput = {
+  readonly category: InputMaybe<CategoryEnumQueryOperatorInput>;
+  readonly date: InputMaybe<DateQueryOperatorInput>;
+  readonly published: InputMaybe<BooleanQueryOperatorInput>;
+  readonly tags: InputMaybe<StringQueryOperatorInput>;
+  readonly title: InputMaybe<StringQueryOperatorInput>;
+};
+
+type FrontmatterSortInput = {
+  readonly category: InputMaybe<SortOrderEnum>;
+  readonly date: InputMaybe<SortOrderEnum>;
+  readonly published: InputMaybe<SortOrderEnum>;
+  readonly tags: InputMaybe<SortOrderEnum>;
+  readonly title: InputMaybe<SortOrderEnum>;
+};
+
 type GatsbyImageDataQueryOperatorInput = {
   readonly eq: InputMaybe<Scalars['GatsbyImageData']>;
   readonly in: InputMaybe<ReadonlyArray<InputMaybe<Scalars['GatsbyImageData']>>>;
@@ -1249,7 +1301,7 @@ type Mdx = Node & {
   readonly body: Maybe<Scalars['String']>;
   readonly children: ReadonlyArray<Node>;
   readonly excerpt: Maybe<Scalars['String']>;
-  readonly frontmatter: Maybe<MdxFrontmatter>;
+  readonly frontmatter: Maybe<Frontmatter>;
   readonly id: Scalars['ID'];
   readonly internal: Internal;
   readonly parent: Maybe<Node>;
@@ -1315,7 +1367,7 @@ type MdxFieldSelector = {
   readonly body: InputMaybe<FieldSelectorEnum>;
   readonly children: InputMaybe<NodeFieldSelector>;
   readonly excerpt: InputMaybe<FieldSelectorEnum>;
-  readonly frontmatter: InputMaybe<MdxFrontmatterFieldSelector>;
+  readonly frontmatter: InputMaybe<FrontmatterFieldSelector>;
   readonly id: InputMaybe<FieldSelectorEnum>;
   readonly internal: InputMaybe<InternalFieldSelector>;
   readonly parent: InputMaybe<NodeFieldSelector>;
@@ -1326,7 +1378,7 @@ type MdxFilterInput = {
   readonly body: InputMaybe<StringQueryOperatorInput>;
   readonly children: InputMaybe<NodeFilterListInput>;
   readonly excerpt: InputMaybe<StringQueryOperatorInput>;
-  readonly frontmatter: InputMaybe<MdxFrontmatterFilterInput>;
+  readonly frontmatter: InputMaybe<FrontmatterFilterInput>;
   readonly id: InputMaybe<StringQueryOperatorInput>;
   readonly internal: InputMaybe<InternalFilterInput>;
   readonly parent: InputMaybe<NodeFilterInput>;
@@ -1335,42 +1387,6 @@ type MdxFilterInput = {
 
 type MdxFilterListInput = {
   readonly elemMatch: InputMaybe<MdxFilterInput>;
-};
-
-type MdxFrontmatter = {
-  readonly category: Maybe<Scalars['String']>;
-  readonly date: Maybe<Scalars['Date']>;
-  readonly published: Maybe<Scalars['Boolean']>;
-  readonly title: Maybe<Scalars['String']>;
-};
-
-
-type MdxFrontmatter_dateArgs = {
-  difference: InputMaybe<Scalars['String']>;
-  formatString: InputMaybe<Scalars['String']>;
-  fromNow: InputMaybe<Scalars['Boolean']>;
-  locale: InputMaybe<Scalars['String']>;
-};
-
-type MdxFrontmatterFieldSelector = {
-  readonly category: InputMaybe<FieldSelectorEnum>;
-  readonly date: InputMaybe<FieldSelectorEnum>;
-  readonly published: InputMaybe<FieldSelectorEnum>;
-  readonly title: InputMaybe<FieldSelectorEnum>;
-};
-
-type MdxFrontmatterFilterInput = {
-  readonly category: InputMaybe<StringQueryOperatorInput>;
-  readonly date: InputMaybe<DateQueryOperatorInput>;
-  readonly published: InputMaybe<BooleanQueryOperatorInput>;
-  readonly title: InputMaybe<StringQueryOperatorInput>;
-};
-
-type MdxFrontmatterSortInput = {
-  readonly category: InputMaybe<SortOrderEnum>;
-  readonly date: InputMaybe<SortOrderEnum>;
-  readonly published: InputMaybe<SortOrderEnum>;
-  readonly title: InputMaybe<SortOrderEnum>;
 };
 
 type MdxGroupConnection = {
@@ -1418,7 +1434,7 @@ type MdxSortInput = {
   readonly body: InputMaybe<SortOrderEnum>;
   readonly children: InputMaybe<NodeSortInput>;
   readonly excerpt: InputMaybe<SortOrderEnum>;
-  readonly frontmatter: InputMaybe<MdxFrontmatterSortInput>;
+  readonly frontmatter: InputMaybe<FrontmatterSortInput>;
   readonly id: InputMaybe<SortOrderEnum>;
   readonly internal: InputMaybe<InternalSortInput>;
   readonly parent: InputMaybe<NodeSortInput>;
@@ -1699,7 +1715,7 @@ type Query_mdxArgs = {
   body: InputMaybe<StringQueryOperatorInput>;
   children: InputMaybe<NodeFilterListInput>;
   excerpt: InputMaybe<StringQueryOperatorInput>;
-  frontmatter: InputMaybe<MdxFrontmatterFilterInput>;
+  frontmatter: InputMaybe<FrontmatterFilterInput>;
   id: InputMaybe<StringQueryOperatorInput>;
   internal: InputMaybe<InternalFilterInput>;
   parent: InputMaybe<NodeFilterInput>;
@@ -2800,17 +2816,17 @@ type GatsbyImageSharpFluid_withWebp_tracedSVGFragment = { readonly tracedSVG: st
 
 type GatsbyImageSharpFluidLimitPresentationSizeFragment = { readonly maxHeight: number, readonly maxWidth: number };
 
-type IndexPageQueryVariables = Exact<{ [key: string]: never; }>;
+type IndexPageQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type IndexPageQuery = { readonly allMongodbBlogPosts: { readonly edges: ReadonlyArray<{ readonly node: { readonly summary: string | null } }> } };
+type IndexPageQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly body: string | null, readonly frontmatter: { readonly title: string, readonly category: CategoryEnum, readonly date: string | null } | null }> } };
 
 type PagePostTemplateQueryQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-type PagePostTemplateQueryQuery = { readonly mdx: { readonly body: string | null, readonly frontmatter: { readonly title: string | null } | null } | null };
+type PagePostTemplateQueryQuery = { readonly mdx: { readonly body: string | null, readonly frontmatter: { readonly title: string, readonly date: string | null, readonly tags: ReadonlyArray<string> | null } | null } | null };
 
 type useSiteMetadataQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2820,7 +2836,7 @@ type useSiteMetadataQueryQuery = { readonly site: { readonly siteMetadata: { rea
 type BlogPostQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type BlogPostQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly id: string, readonly frontmatter: { readonly title: string | null } | null }> } };
+type BlogPostQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly id: string, readonly frontmatter: { readonly published: boolean, readonly title: string, readonly category: CategoryEnum } | null }> } };
 
 
 }
