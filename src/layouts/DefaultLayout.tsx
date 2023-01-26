@@ -10,10 +10,13 @@ import type { PropsWithChildren } from "react";
 import React from "react";
 
 import logoPath from "../assets/images/icon.png";
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+import globalStyles from "../styles/global";
 
 const DefaultLayout: React.FC<PropsWithChildren> = ({ children }) => {
+  globalStyles();
+
   return (
     <>
       <Header />
