@@ -24,6 +24,7 @@ const config: GatsbyConfig = {
   plugins: [
     "gatsby-plugin-mdx",
     "gatsby-plugin-sharp",
+    "gatsby-plugin-svgr",
     "gatsby-transformer-sharp",
     "gatsby-plugin-image",
     "gatsby-theme-stitches",
@@ -39,7 +40,7 @@ const config: GatsbyConfig = {
     {
       resolve: "gatsby-plugin-manifest",
       options: {
-        icon: "./src/assets/images/icon.png",
+        icon: "./src/assets/images/logo.svg",
       },
     },
     {
