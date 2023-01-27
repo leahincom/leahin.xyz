@@ -24,9 +24,11 @@
     "*.tsx": "eslint --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@fontsource/montserrat": "^4.5.14",
     "@mdx-js/react": "^2.2.1",
     "@seed-design/design-token": "^1.0.0",
     "@stitches/react": "^1.2.8",
+    "@svgr/webpack": "^6.5.1",
     "cjk-slug": "^0.3.0",
     "dotenv": "^16.0.3",
     "gatsby": "^5.4.2",
@@ -38,6 +40,7 @@
     "gatsby-plugin-seed-design": "^0.2.5",
     "gatsby-plugin-sharp": "^5.4.0",
     "gatsby-plugin-sitemap": "^6.4.0",
+    "gatsby-plugin-svgr": "^3.0.0-beta.0",
     "gatsby-source-filesystem": "^5.4.0",
     "gatsby-source-mongodb": "^5.4.0",
     "gatsby-theme-stitches": "^1.0.1",
