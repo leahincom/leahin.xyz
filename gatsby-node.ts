@@ -1,7 +1,7 @@
 import type { GatsbyNode } from "gatsby";
 import path from "path";
 
-import slugify from "./src/utils/slugify";
+import slugify from "./src/utils/url";
 
 export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
   ({ actions }) => {

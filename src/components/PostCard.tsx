@@ -4,24 +4,30 @@ import type { PropsWithChildren } from "react";
 import React from "react";
 
 import { styled } from "../styles/stitches.config";
+import { PillBadge } from "./common/Badge";
 
 type PostCardProps = {
   title: string;
-  category: string;
+  tags: readonly string[] | null;
   summary: string;
   slug: string;
 } & PropsWithChildren;
-const PostCard: React.FC<PostCardProps> = ({
-  title,
-  category,
-  summary,
-  slug,
-}) => {
+const PostCard: React.FC<PostCardProps> = ({ title, tags, summary, slug }) => {
   return (
     <Link to={slug}>
       <Card>
         <Title>{title}</Title>
-        <Category>{category}</Category>
+        {!!tags &&
+          tags.map((tag) => (
+            <PillBadge
+              key={`${slug}-${tag}`}
+              size="medium"
+              property="basic"
+              variant="fill"
+            >
+              {tag}
+            </PillBadge>
+          ))}
         <Body>{summary}</Body>
       </Card>
     </Link>
@@ -31,11 +37,12 @@ const PostCard: React.FC<PostCardProps> = ({
 export default PostCard;
 
 const Card = styled("article", {
-  padding: "1rem",
+  display: "grid",
+  gridTemplateColumns: "1fr",
+  gap: "10px",
 });
 
 const Title = styled("h1", {});
-const Category = styled("span", {});
 const Body = styled("p", {
   maxHeight: rem(80),
   display: "-webkit-box",

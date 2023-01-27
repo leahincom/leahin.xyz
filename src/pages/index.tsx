@@ -1,12 +1,16 @@
+import { vars } from "@seed-design/design-token";
 import type { HeadProps, PageProps } from "gatsby";
+import { Link } from "gatsby";
 import { graphql } from "gatsby";
 import * as React from "react";
+import slugify from "slugify";
 
+import { PillBadge } from "../../src/components/common/Badge";
 import PostCard from "../components/PostCard";
 import { useSiteMetadata } from "../hooks/useSiteMetadata";
 import DefaultLayout, { DefaultLayoutHead } from "../layouts/DefaultLayout";
 import { styled } from "../styles/stitches.config";
-import slugify from "../utils/slugify";
+import url from "../utils/url";
 
 export const query = graphql`
   query IndexPageQuery {
@@ -16,6 +20,7 @@ export const query = graphql`
           title
           category
           date
+          tags
         }
         body
       }
@@ -25,14 +30,57 @@ export const query = graphql`
 
 type IndexPageProps = PageProps<Queries.IndexPageQueryQuery>;
 const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
+  const [selectedCategory, setSelectedCategory] = React.useState<
+    string | undefined
+  >();
+
+  const categories = data.allMdx.nodes.map(
+    (node) => node.frontmatter!.category,
+  );
+
+  const selectedPosts = React.useMemo(() => {
+    return !selectedCategory
+      ? data.allMdx.nodes
+      : data.allMdx.nodes.filter(
+          (node) => node.frontmatter?.category === selectedCategory,
+        );
+  }, [selectedCategory]);
+
+  const handleClick = (category: string) => () => {
+    if (category === selectedCategory) setSelectedCategory(undefined);
+    else setSelectedCategory(category);
+  };
+
   return (
     <DefaultLayout>
+      <Navbar>
+        {categories.map((category) => (
+          <PillBadge
+            key={category}
+            size="large"
+            property="basic"
+            variant="normal"
+            onClick={handleClick(category)}
+            css={
+              category === selectedCategory
+                ? {
+                    backgroundColor: vars.$semantic.color.grayPressed,
+                  }
+                : {}
+            }
+          >
+            <Link to={`#${slugify(category, { lower: true })}`}>
+              {category}
+            </Link>
+          </PillBadge>
+        ))}
+      </Navbar>
       <Container>
-        {data.allMdx.nodes.map((post) => (
+        {selectedPosts.map((post) => (
           <PostCard
-            slug={slugify(post.frontmatter!.category, post.frontmatter!.title)}
+            slug={url(post.frontmatter!.category, post.frontmatter!.title)}
             title={post.frontmatter!.title}
-            category={post.frontmatter!.category}
+            tags={post.frontmatter!.tags}
             summary={post.body ?? ""}
           >
             {post.body}
@@ -63,8 +111,14 @@ const Container = styled("section", {
   display: "grid",
   gridTemplateColumns: "1fr",
   gap: "1rem",
+  padding: "2rem 0",
 
   "@md": {
     gridTemplateColumns: "1fr 1fr",
   },
+});
+
+const Navbar = styled("ul", {
+  listStyle: "none",
+  display: "flex",
 });
