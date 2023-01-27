@@ -2819,7 +2819,7 @@ type GatsbyImageSharpFluidLimitPresentationSizeFragment = { readonly maxHeight: 
 type IndexPageQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-type IndexPageQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly body: string | null, readonly frontmatter: { readonly title: string, readonly category: CategoryEnum, readonly date: string | null } | null }> } };
+type IndexPageQueryQuery = { readonly allMdx: { readonly nodes: ReadonlyArray<{ readonly body: string | null, readonly frontmatter: { readonly title: string, readonly category: CategoryEnum, readonly date: string | null, readonly tags: ReadonlyArray<string> | null } | null }> } };
 
 type PagePostTemplateQueryQueryVariables = Exact<{
   id: Scalars['String'];

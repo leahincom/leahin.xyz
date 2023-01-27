@@ -1,7 +1,10 @@
 import { vars } from "@seed-design/design-token";
 import type { HeadProps, PageProps } from "gatsby";
+import { navigate } from "gatsby";
 import { Link } from "gatsby";
 import { graphql } from "gatsby";
+import _ from "lodash";
+import { rem } from "polished";
 import * as React from "react";
 import slugify from "slugify";
 
@@ -34,8 +37,8 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
     string | undefined
   >();
 
-  const categories = data.allMdx.nodes.map(
-    (node) => node.frontmatter!.category,
+  const categories = _.uniq(
+    data.allMdx.nodes.map((node) => node.frontmatter!.category),
   );
 
   const selectedPosts = React.useMemo(() => {
@@ -50,6 +53,10 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
     if (category === selectedCategory) setSelectedCategory(undefined);
     else setSelectedCategory(category);
   };
+
+  React.useEffect(() => {
+    navigate("/");
+  }, []);
 
   return (
     <DefaultLayout>
@@ -69,7 +76,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
                 : {}
             }
           >
-            <Link to={`#${slugify(category, { lower: true })}`}>
+            <Link to={`?${slugify(category, { lower: true })}`}>
               {category}
             </Link>
           </PillBadge>
@@ -110,7 +117,7 @@ export const Head = ({ location }: HeadProps) => {
 const Container = styled("section", {
   display: "grid",
   gridTemplateColumns: "1fr",
-  gap: "1rem",
+  gap: "3rem",
   padding: "2rem 0",
 
   "@md": {
@@ -118,7 +125,9 @@ const Container = styled("section", {
   },
 });
 
-const Navbar = styled("ul", {
-  listStyle: "none",
-  display: "flex",
+const Navbar = styled("div", {
+  width: "fit-content",
+  display: "grid",
+  gap: rem(8),
+  gridAutoFlow: "column",
 });

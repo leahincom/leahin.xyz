@@ -1,6 +1,6 @@
 import { vars } from "@seed-design/design-token";
 
-import { createTheme, styled } from "../../styles/stitches.config";
+import { styled } from "../../styles/stitches.config";
 import { textStyles } from "../../styles/text";
 
 // https://www.figma.com/file/ty7UxJ61CVPeVU2Gf1LJGQ/App-Components?node-id=77%3A54&t=eO5LCUTFdrq9yD7a-0
@@ -14,7 +14,7 @@ type Props = {
   variant?: Variant;
 };
 
-const ColorSchemas = createTheme({
+const ColorSchemas = {
   basic: {
     primary: vars.$scale.color.gray700,
     onPrimary: vars.$scale.color.gray00,
@@ -43,7 +43,7 @@ const ColorSchemas = createTheme({
     onSecondary: vars.$semantic.color.danger,
     outline: vars.$semantic.color.danger,
   },
-});
+};
 
 const getCompoundVariants = () => {
   const getColorScheme = (
