@@ -16,5 +16,5 @@
       "gatsby-theme-stitches/src/*": ["./src/styles/*"]
     }                                
   },
-  "include": ["./*.ts", "./src/*", "./plugins/*"]
+  "include": ["./*.ts", "./src/**/*", "./plugins/*"]
 }

@@ -1,8 +1,9 @@
 .env
 
+.DS_Store
 node_modules/
 .cache/
 yarn-error.log
 
-public
+public/
 src/gatsby-types.d.ts
