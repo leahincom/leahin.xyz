@@ -1,5 +1,5 @@
 import { vars } from "@seed-design/design-token";
-import { rem } from "polished";
+import { padding, rem } from "polished";
 
 import { globalCss } from "./stitches.config";
 
@@ -8,6 +8,7 @@ const globalStyles = globalCss({
     margin: 0,
     padding: 0,
     lineHeight: "140%",
+    fontFamily: "Montserrat",
   },
   body: {
     background: vars.$semantic.color.paperDefault,
@@ -22,8 +23,12 @@ const globalStyles = globalCss({
   },
   "#layout": {
     maxWidth: rem(768),
-    paddingBottom: rem(40),
+    ...padding(rem(40), "2rem"),
     margin: "0 auto",
+
+    "@md": {
+      ...padding(rem(40), "1rem"),
+    },
   },
 });
 
