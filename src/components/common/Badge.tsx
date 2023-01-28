@@ -108,15 +108,12 @@ const BaseBadge = styled("span", {
     size: {
       large: {
         padding: "4px 8px",
-        minHeight: "24px",
       },
       medium: {
         padding: "2px 6px",
-        minHeight: "19px",
       },
       small: {
         padding: "2px 4px",
-        minHeight: "18px",
       },
     },
     property: {
