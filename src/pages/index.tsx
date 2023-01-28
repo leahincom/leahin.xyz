@@ -1,4 +1,3 @@
-import { vars } from "@seed-design/design-token";
 import type { HeadProps, PageProps } from "gatsby";
 import { navigate } from "gatsby";
 import { Link } from "gatsby";
@@ -20,6 +19,7 @@ export const query = graphql`
     allMdx {
       nodes {
         frontmatter {
+          published
           title
           category
           date
@@ -43,9 +43,11 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
 
   const selectedPosts = React.useMemo(() => {
     return !selectedCategory
-      ? data.allMdx.nodes
+      ? data.allMdx.nodes.filter((node) => node.frontmatter!.published)
       : data.allMdx.nodes.filter(
-          (node) => node.frontmatter?.category === selectedCategory,
+          (node) =>
+            node.frontmatter!.published &&
+            node.frontmatter!.category === selectedCategory,
         );
   }, [selectedCategory]);
 
@@ -62,29 +64,22 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
     <DefaultLayout>
       <Navbar>
         {categories.map((category) => (
-          <PillBadge
-            key={category}
-            size="large"
-            property="basic"
-            variant="normal"
-            onClick={handleClick(category)}
-            css={
-              category === selectedCategory
-                ? {
-                    backgroundColor: vars.$semantic.color.grayPressed,
-                  }
-                : {}
-            }
-          >
-            <Link to={`?${slugify(category, { lower: true })}`}>
+          <Link key={category} to={`?${slugify(category, { lower: true })}`}>
+            <PillBadge
+              size="large"
+              property="basic"
+              variant={category === selectedCategory ? "outline" : "normal"}
+              onClick={handleClick(category)}
+            >
               {category}
-            </Link>
-          </PillBadge>
+            </PillBadge>
+          </Link>
         ))}
       </Navbar>
       <Container>
-        {selectedPosts.map((post) => (
+        {selectedPosts.map((post, idx) => (
           <PostCard
+            key={`${post.frontmatter?.category}-${idx}`}
             slug={url(post.frontmatter!.category, post.frontmatter!.title)}
             title={post.frontmatter!.title}
             tags={post.frontmatter!.tags}

@@ -29,7 +29,7 @@ const PagePostTemplate: React.FC<PagePostTemplateProps> = ({ data }) => {
         <p>{data.mdx.frontmatter?.date}</p>
         <p>
           {data.mdx.frontmatter?.tags?.map((tag) => (
-            <span>{tag}</span>
+            <span key={tag}>{tag}</span>
           ))}
         </p>
       </Metadata>
