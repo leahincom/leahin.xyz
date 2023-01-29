@@ -1,0 +1,612 @@
+---
+published: true
+title: gatsby가 graphql을 사용하는 방식
+date: "2023-01-28"
+category: TECH
+tags:
+  - gatsby
+---
+
+블로그를 gatsby로 만들면서, 가장 중요한 개념이 gatsby가 graphql을 사용하는 방식이라고 생각이 들만큼
+모든 것이 graphql 기반으로 이루어져 있었다.
+
+이 글은 사실상 ["Why Gatsby uses GraphQL"](https://www.gatsbyjs.com/docs/why-gatsby-uses-graphql/)
+문서를 번역한 것과 같다. 여기에 필요한 내용을 조금 덧붙여서 gatsby를 사용하기 위해 기본적으로 알아야 할
+graphql 사용 방식을 정리해보고자 한다.
+
+<br />
+
+## Part 1. Gatsby와 GraphQL의 연관성
+
+원문은 [여기](https://www.gatsbyjs.com/docs/conceptual/graphql-concepts/#how-do-graphql-and-gatsby-work-together)서
+확인할 수 있다.
+
+### GraphQL과 Gatsby가 함께 동작하는 방식
+
+GraphQL의 가장 좋은 점은 **유연성** 이다. 보통 GraphQL은 클라이언트가 요청한 데이터를 응답으로 보내기 위해 서버에 사용한다.
+가장 먼저 하는 것은 GraphQL 서버를 위한 스키마를 정의하고, 데이터베이스 또는 외부 API로부터 데이터를 받고 정제하기 위해 resolver를 구현한다.
+
+> 스키마란? 데이터 구조를 표현하기 위한 방식이다.
+
+gatsby는 빌드 타임에 GraphQL을 사용하고 실제 사이트에서는 사용되지 않는다. 이 부분이 특징적인데,
+이는 즉 GraphQL을 (실제 운용되는) 프로덕션 웹사이트에서 사용하기 위해 추가적인 서비스 (예: 데이터베이스, Node.js) 를 사용할 필요가 없다는 것이다.
+
+gatsby는 브라우저에서 live GraphQL 서버를 사용하기보다 native 빌드 타임 GraphQL에 쿼리를 사용하는 것을 장려한다.
+
+### Gatsby의 GraphQL 스키마는 어디서 오는걸까?
+
+GraphQL을 사용할 경우 스키마를 직접 정의하고 생성해야 한다.
+gatsby는 다른 소스로부터 데이터를 가져올 수 있도록 플러그인을 사용한다. 이 데이터는 자동적으로 GraphQL 스키마를 추론한다.
+
+만약 gatsby의 데이터가 아래와 같이 생겼다면:
+
+```
+{
+  "title": "A long long time ago"
+}
+```
+
+gatsby는 이로부터 아래와 같은 스키마를 생성한다:
+
+```
+title: String
+```
+
+이는 어디에서나 데이터를 가져와 데이터를 사용할 수 있도록 바로 GraphQL 쿼리를 생성한다.
+
+_만약 데이터가 부분적으로 혹은 스키마 전체에서 사용되지 않는 경우에도 스키마에 해당 데이터 소스를 정의할 수 있기 때문에
+혼란을 야기할 수 있다. 만약 데이터의 일부가 스키마에 정의되지 않았다면, gatsby는 해당 부분을 재생산하지 않을 수 있다._
+
+<br />
+
+## Gatsby가 GraphQL을 사용하는 이유
+
+gatsby에 대한 가장 많은 질문은 "왜 GraphQL을 사용하는가? 정적 파일을 생성하지 않나?" 이다.
+
+맥락 없이는 GraphQL을 사용하는 것이 과잉처럼 보일 수 있다. 맥락을 제공하기 위해 페이지를 생성할 때
+어떤 문제가 있는지, 그리고 GraphQL을 사용하면 그 문제를 어떻게 해결할 수 있는지 살펴보자.
+
+### 1. 데이터 없이 페이지 생성하기
+
+`src/pages/` 에 직접 생성하지 않는 페이지는 gatsby가 제공하는 `createPages` Node API를 사용해 programmatically 생성한다.
+
+페이지 생성을 위해 필요한 것은 (1) 페이지가 생성될 위치를 가리키는 `path` 와 (2) 해당 페이지에 렌더링될 컴포넌트이다.
+
+예를 들어, 아래와 같은 컴포넌트가 있다고 하자.
+
+```
+// src/templates/no-data.js
+
+import React from "react"
+
+const NoData = () => (
+  <section>
+    <h1>This Page Was Created Programmatically</h1>
+    <p>
+      No data was required to create this page — it’s just a React component!
+    </p>
+  </section>
+)
+
+export default NoData
+```
+
+`gatsby-node.js` 를 사용해 `/no-data/` 페이지를 생성할 수 있다.
+
+```
+// gatsby-node.js
+
+exports.createPages = ({ actions: { createPage } }) => {
+  createPage({
+    path: "/no-data/",
+    component: require.resolve("./src/templates/no-data.js"),
+  })
+}
+```
+
+위 코드는 `NoData` 로 생성한 컴포넌트를 `createPage` 의 `component` 로 제공하고, 위치를 `path` 로 제공한다.
+
+위와 같이 데이터가 없는 페이지를 빌드하는 경우 외에, template 컴포넌트를 재사용할 수 있도록 데이터를 넘겨주는 경우가 있을 것이다.
+
+### 2. 하드 코딩한 데이터를 이용해 페이지 만들기
+
+생성한 페이지에 데이터를 넘겨주기 위해, `context` 를 `createPage` 에 넘겨주자.
+
+```
+// gatsby-node.js
+
+exports.createPages = ({ actions: { createPage } }) => {
+  createPage({
+    path: "/page-with-context/",
+    component: require.resolve("./src/templates/with-context.js"),
+    context: {
+      title: "We Don’t Need No Stinkin’ GraphQL!",
+      content: "<p>This is page content.</p><p>No GraphQL required!</p>",
+    },
+  })
+}
+```
+
+`context` 속성은 객체를 받기 때문에, 페이지에 필요한 (접근 가능한) 아무 데이터나 넘겨줄 수 있다.
+
+> 아래 예약어는 context에서 사용할 수 없다.
+> path, matchPath, component, componentChunkName, pluginCreator\_\_\_NODE, pluginCreatorId
+
+gatsby는 페이지를 생성할 때 `pageContext` prop을 포함하고 해당 값을 `context` 에 할당함으로써
+컴포넌트에서 해당 값에 접근 가능하다.
+
+```
+// src/templates/with-context.js
+
+import React from "react"
+
+const WithContext = ({ pageContext }) => (
+  <section>
+    <h1>{pageContext.title}</h1>
+    <div dangerouslySetInnerHTML={{ __html: pageContext.content }} />
+  </section>
+)
+
+export default WithContext
+```
+
+위 예시는 `withContext` 라는 템플릿 코드에서 pageContext에 접근해 context로 넘겨준 title, content 값을 가져오고 있다.
+
+이 접근 방식은 하드 코딩된 데이터를 사용하므로 분명히 한계가 존재한다.
+
+### 3. 이미지를 지닌 JSON으로 페이지 만들기
+
+대부분의 경우에 페이지를 위한 데이터는 `gatsby-node.js` 에 하드코딩으로 넣을 수 없고, 써드파티 API, 로컬 마크다운 (이 블로그는 마크다운을 지원한다),
+JSON 파일과 같이 외부 소스에서 가져온다.
+
+예를 들어, post 데이터를 JSON 파일로부터 만들어보자.
+
+```
+[
+  {
+    "title": "Vintage Purple Tee",
+    "slug": "vintage-purple-tee",
+    "description": "<p>Keep it simple with this vintage purple tee.</p>",
+    "price": "$10.00",
+    "image": "/images/amberley-romo-riggins.jpg"
+  },
+  ...
+]
+```
+
+위 `image` 는 `/static/images` 폴더에 추가되어야 한다. 이 부분이 관리가 어려워지는 지점이다.
+JSON과 이미지는 같은 장소에 있지 않다!
+
+JSON과 이미지가 더해지면서, `gatsby-node.js` 에 JSON을 import 하면서 페이지를 생성하고 요소 하나하나 반복문을 돌면서 페이지 생성을 반복할 수 있다.
+
+```
+// gatsby-node.js
+
+exports.createPages = ({ actions: { createPage } }) => {
+  const products = require("./data/products.json")
+  products.forEach(product => {
+    createPage({
+      path: `/product/${product.slug}/`,
+      component: require.resolve("./src/templates/product.js"),
+      context: {
+        title: product.title,
+        description: product.description,
+        image: product.image,
+        price: product.price,
+      },
+    })
+  })
+}
+```
+
+위 product 템플릿은 `pageContext` 를 사용해 데이터를 표현한다.
+
+```
+// src/templates/product.js
+
+import React from "react"
+
+const Product = ({ pageContext }) => (
+  <div>
+    <h1>{pageContext.title}</h1>
+    <img
+      src={pageContext.image}
+      alt={pageContext.title}
+      style={{ float: "left", marginRight: "1rem", width: 150 }}
+    />
+    <p>{pageContext.price}</p>
+    <div dangerouslySetInnerHTML={{ __html: pageContext.description }} />
+  </div>
+)
+
+export default Product
+```
+
+이렇게 끝난 것처럼 보이지만, 갈수록 복잡해지는 로직을 감당할 수 없는 단점이 있다. 예를 들어,
+
+1. 이미지와 product 데이터는 소스 코드의 다른 곳에 위치한다.
+2. 이미지 path는 생성된 사이트에서는 절대값을 가지지만 소스 코드에서는 그렇지 않다. (`./data/products.json`)
+   이는 JSON에서 이미지를 어떻게 찾아야 할지 혼란을 야기한다.
+3. 이미지는 최적화되어 있지 않고, 모두 일일이 최적화를 진행해야 한다.
+4. 프로덕 목록 프리뷰를 생성하기 위해, `context` 에 모든 프로덕 정보를 넘겨줘야 한다. 이는 프로덕 개수가 증가할 수록 다루기 어려워진다.
+5. 페이지를 렌더링하는 템플릿이 어디에서 데이터를 가져오는지 명확하지 않기 때문에, 데이터를 업데이트 할 때 혼란을 야기할 수 있다.
+
+이러한 한계를 극복하기 위해, gatsby는 데이터 관리 레이어 (data management layer) 로 GraphQL을 도입한다.
+
+### 4. GraphQL을 이용해 페이지 만들기
+
+데이터를 GraphQL에 넣기 위해 처음 세팅이 좀 더 필요하지만, 비용 대비 높은 효율을 가져오니 하나씩 살펴보자.
+
+앞서 사용한 `data/products.json` 을 계속 예시로 들어보자면, GraphQL은 위에서 설명한 모든 한계를 극복할 수 있다.
+
+1. 이미지는 `data/images/` 에 프로덕과 함께 위치할 수 있다. (Collocation)
+2. `data/products.json` 에 있는 이미지 path는 JSON 파일을 기준으로 상대 경로를 적용할 수 있다.
+3. gatsby는 더 빠른 로딩과 나은 UX을 제공하기 위해 이미지 최적화를 자동으로 제공한다.
+4. `context` 에 모든 프로덕 데이터를 넘길 필요가 없다.
+5. 데이터는 사용되는 컴포넌트에서 GraphQL을 사용해 로딩될 수 있으므로, 어디서 데이터가 오고 어떻게 변경할지 파악하는데 용이하다.
+
+### 5. GraphQL에 데이터를 로드하기 위해 필요한 플러그인 설치하기
+
+프로덕과 이미지 데이터를 GraphQL에 넣기 위해, 몇몇의 gatsby 플러그인을 설치해야 한다. 즉,
+
+- `gatsby-source-filesystem` : gatsby 내부 데이터 저장소에 JSON 파일을 로드한다. 이는 GraphQL로 쿼리할 수 있다.
+- `gatsby-transformer-json` : JSON 파일을 GraphQL로 쿼리할 수 있도록 변환한다.
+- `gatsby-plugin-sharp` : 이미지를 최적화한다.
+- `gatsby-transformer-sharp` : gatsby 데이터 저장소에 최적화된 이미지 데이터를 저장한다.
+- `gatsby-plugin-image` : 추가로, 최적화된 이미지를 레이지 로딩으로 보여준다.
+
+위 플러그인을 설치하고 `gatsby-config.js` 에 추가한다.
+
+```
+// gatsby-config.js
+
+module.exports = {
+  plugins: [
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        path: "./data/",
+      },
+    },
+    "gatsby-transformer-json",
+    "gatsby-transformer-sharp",
+    "gatsby-plugin-sharp",
+  ],
+}
+```
+
+GraphiQL에서 위 플러그인으로부터 추가된 데이터를 확인할 수 있다.
+그 중 `allProductsJson` 는 `edges` 를 지니고, 이는 `nodes` 를 지닌다. 이 쿼리는 JSON transformer 플러그인으로부터 제공된다.
+해당 플러그인은 각각의 프로덕에 해당하는 노드를 생성하고, 노드 안에 필요한 프로덕 데이터를 골라 가져올 수 있다.
+아래는 하나의 필드를 가져오는 쿼리 예시이다.
+
+```
+{
+  allProductsJson {
+    edges {
+      node {
+        slug
+      }
+    }
+  }
+}
+```
+
+### 6. GraphQL로 페이지 생성하기
+
+`gatsby-node.js` 에서 위 GraphQL 쿼리를 사용해 페이지를 생성할 수 있다.
+
+```
+// gatsby-node.js
+
+exports.createPages = async ({ actions: { createPage }, graphql }) => {
+  const results = await graphql(`
+    {
+      allProductsJson {
+        edges {
+          node {
+            slug
+          }
+        }
+      }
+    }
+  `)
+
+  results.data.allProductsJson.edges.forEach(edge => {
+    const product = edge.node
+
+    createPage({
+      path: `/gql/${product.slug}/`,
+      component: require.resolve("./src/templates/product-graphql.js"),
+      context: {
+        slug: product.slug,
+      },
+    })
+  })
+}
+```
+
+`createPages` Node API에서 제공하는 `graphql` 헬퍼를 사용해 쿼리를 실행할 수 있다.
+더 진행하기 전에 쿼리에 대한 결과가 오는지 확인하기 위해, `async/ await` 를 사용하자. (외부 데이터를 패치할 때는 비동기적으로 작성하는 것과 같은 맥락이다.)
+
+결과는 `data/products.json` 과 매우 비슷한 내용이므로, 반복문을 통해 페이지를 하나씩 생성하면 된다.
+다른 점은 현재는 `context` 에 `slug` 만 전달하고 있는데, 템플릿 컴포넌트에서 더 많은 프로덕 데이터를 가져오기 위해 사용할 예정이다.
+
+`context` 인자는 템플릿 컴포넌트의 `pageContext` prop으로 사용할 수 있다.
+쿼리를 더욱 강력하게 만들기 위해, gatsby는 GraphQL 변수로 `context` 의 모든 것을 노출한다.
+이는 즉 "`context` 에 제공된 slug를 사용해 데이터를 가져와줘" 와 같은 쿼리를 작성할 수 있다는 것이다.
+
+아래 예시를 보자.
+
+```
+// src/templates/product-graphql.js
+
+import React from "react"
+import { graphql } from "gatsby"
+import { GatsbyImage } from "gatsby-plugin-image"
+
+export const query = graphql`
+  query($slug: String!) {
+    productsJson(slug: { eq: $slug }) {
+      title
+      description
+      price
+      image {
+        childImageSharp {
+          gatsbyImageData(layout: CONSTRAINED, width: 150)
+        }
+      }
+    }
+  }
+`
+
+const Product = ({ data }) => {
+  const product = data.productsJson
+
+  return (
+    <div>
+      <h1>{product.title}</h1>
+      <GatsbyImage
+        image={product.image.childImageSharp.gatsbyImageData}
+        alt={product.title}
+        style={{ float: "left", marginRight: "1rem" }}
+      />
+      <p>{product.price}</p>
+      <div dangerouslySetInnerHTML={{ __html: product.description }} />
+    </div>
+  )
+}
+
+export default Product
+```
+
+```
+const Product = ({ data }) => {
+  const product = data.productsJson
+  ...
+}
+```
+
+1. 쿼리 결과는 `data` prop으로 템플릿 컴포넌트에 추가된다.
+
+```
+image {
+  childImageSharp {
+    gatsbyImageData(layout: CONSTRAINED, width: 150)
+  }
+}
+```
+
+2. 이미지 path는 sharp transformer에 의해 자동적으로 "child node" 로 변환되는데, 이는 최적화된 버전을 포함한다.
+3. `img` 태그는 `gatsby-plugin-image` 컴포넌트로 (`GatsbyImage`) 대체된다. `src` 대신 최적화된 이미지 데이터 객체를 받는다.
+
+이러한 초기 세팅 후에는 직접 JSON을 로드할 때와 같은 과정이라고 봐도 무방하다.
+하지만 자동으로 최적화된 이미지를 제공하거나 데이터를 직접 사용하는 곳에 위치하고 관리할 수 있다는 이점이 있다.
+
+GraphQL은 필수적이지 않지만, 적용했을 때 상당히 얻는 이점이 많다.
+GraphQL은 페이지를 빌드하고 최적화하는 과정을 간소화하기 때문에, gatsby 어플리케이션을 구조화하고 작성하는데 가장 좋은 수단이라고 판단한다.
+
+<br />
+
+## PageQuery
+
+gatsby의 `graphql` 태그는 페이지 컴포넌트로 하여금 GraphQL query로 데이터를 쿼리할 수 있도록 한다.
+페이지에서 어떻게 `graphql` 태그를 사용하는지, 해당 태그가 어떻게 동작하는지 알아보자.
+
+### 페이지에서 graphql 태그 사용하기
+
+페이지 컴포넌트는 각각의 고유한 쿼리를 지닌다. 이 쿼리는 페이지를 생성할 때 어떤 데이터를 골라야 하는지에 대한 변수를 제공받아 실행될 수 있다.
+
+페이지에서 siteMetadata를 사용해보자.
+
+1. `siteMetadata` 에 `description` 필드 추가하기
+
+```
+// gatsby-config.js
+
+module.exports = {
+siteMetadata: {
+  title: "My Homepage",
+  description: "This is where I write my thoughts.",
+},
+}
+```
+
+2. 메인 페이지 `src/pages/index.js` 만들기
+
+```
+// src/pages/index.js
+
+import React from "react"
+
+const HomePage = () => {
+return <div>Hello!</div>
+}
+
+export default HomePage
+```
+
+3. `graphql` 쿼리를 추가하기
+
+```
+import * as React from 'react'
+ import { graphql } from 'gatsby'
+
+const HomePage = () => {
+return (
+  <div>
+    Hello!
+  </div>
+)
+}
+
+ export const query = graphql`
+  query HomePageQuery {
+    site {
+      siteMetadata {
+        description
+      }
+    }
+  }
+ `
+```
+
+페이지는 하나의 쿼리를 포함할 수 있다.
+이 때 graphql 태그로 생성하는 변수명은 중요치 않다. gatsby는 export하는 graphql string을 살벼조기 때문이다.
+
+`gatsby-config.js` 에서 설정한 `siteMetadata` 는 `site` query 로 가져올 수 있고, 추가한 필드에 접근할 수 있다.
+
+4. 컴포넌트에서 쿼리 결과 사용하기
+
+```
+const HomePage = ({data}) => {
+return (
+  <div>
+  {data.site.siteMetadata.description}
+  </div>
+)
+}
+```
+
+페이지에서 export하는 graphql 데이터는 PageProps의 `data` 로 가져올 수 있다.
+
+### graphql 태그는 어떻게 동작하는가?
+
+graphql tag는 **tag function** 이다. ([MDN 문서](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates))
+gatsby가 이 tag를 다루는 면에서는 특별한 점이 있는데,
+
+**짧게 말해서** gatsby 빌드 시점에 GraphQL 쿼리는 파싱을 위해 원본 소스에서 추출된다.
+**설명을 덧붙이자면** gatsby는 Relay의 기법을 사용해 빌드 시점에 소스 코드를 AST로 변환한다.
+file-parser.js 와 query-compiler.js 는 `graphql` 태그가 달린 템플릿을 골라 원본 소스 코드에서 이를 효과적으로 제거한다.
+
+이는 즉 graphql 태그가 자바스크립트가 다뤄지는 방식대로 실행하지 않다는 뜻이다.
+예를 들어, expression interpolation (template literal) 을 사용할 수 없다.
+
+> However, a tagged template literal may not result in a string; it can be used with a custom tag function to perform whatever operations you want on the different parts of the template literal.
+
+하지만 `conext` 객체에 페이지 쿼리를 위한 변수를 전달할 수는 있다.
+
+```
+// gatsby-node.js
+
+posts.forEach(({ node }, index) => {
+  createPage({
+    path: node.fields.slug,
+    component: path.resolve(`./src/templates/blog-post.js`),
+    // values in the context object are passed in as variables to page queries
+    context: {
+      title: node.title, // "Using a Theme"
+    },
+  })
+})
+```
+
+이렇게 전달한 context 객체의 필드는 페이지 쿼리의 변수에 전달된다.
+
+```
+// src/templates/blog-post.js
+
+export const query = graphql`
+  query ($title: String) {
+    mdx(title: {eq: $title}) {
+      id
+      title
+    }
+  }
+`
+```
+
+<br />
+
+## StaticQuery
+
+`useStaticQuery` 는 gatsby GraphQL 데이터 레이어에서 React Hook을 이용해 빌드 타임에 쿼리를 실행한다.
+이는 GraphQL 쿼리가 파싱되고, evaluate 된 다음, 컴포넌트 내부로 주입되어 컴포넌트에서 데이터를 사용할 수 있음을 의미한다.
+
+hook의 가장 강력한 특징은 함수 단위를 구성하고 재사용할 수 있는 것이다. `useStaticQuery` 는 이러한 react hook 중 하나이다.
+
+아무 컴포넌트에서나 재사용할 수 있는 `siteMetadata` 를 가져오는 `useSiteMetadata` 훅을 만들어보자.
+
+```
+import { useStaticQuery, graphql } from "gatsby"
+
+export const useSiteMetadata = () => {
+  const { site } = useStaticQuery(
+    graphql`
+      query SiteMetaData {
+        site {
+          siteMetadata {
+            title
+            siteUrl
+            headline
+            description
+            image
+            video
+            twitter
+            name
+            logo
+          }
+        }
+      }
+    `
+  )
+  return site.siteMetadata
+}
+```
+
+이 훅은 아무 컴포넌트에서나 사용될 수 있다.
+
+```
+import React from "react"
+import { useSiteMetadata } from "../hooks/use-site-metadata"
+
+export default function Home() {
+  const { title, siteUrl } = useSiteMetadata()
+  return <h1>welcome to {title}</h1>
+}
+```
+
+### page query 와 static query 의 차이
+
+페이지를 생각해보면, gatsby는 변수를 필요로 하는 쿼리를 페이지 context로부터 제공받아 관리할 수 있다.
+그러나, 페이지 쿼리는 페이지 컴포넌트의 최상단에서, 하나만 생성할 수 있다.
+
+하지만 static query는 변수를 포함하지 않는다. 이는 페이지 단위가 아닌 특정 컴포넌트에서 사용되고, 이는 컴포넌트 트리 하위에 위치할 수 있기 때문이다.
+해당 쿼리로 가져오는 데이터는 dynamic 하지 않으며 컴포넌트 트리 어디서나 (어느 레벨에서나) 부를 수 있다.
+이 때 dynamic 하지 않다는 것은, 변수를 사용할 수 없으므로 "static" 한 query 임을 의미한다.
+
+위와 같은 특징 때문에 몇개의 한계를 지닌다:
+
+- `useStaticQuery` 는 변수를 지닐 수 없다. 하지만 페이지를 포함한, 어느 컴포넌트에서나 사용 가능하다.
+- gatsby에서 쿼리가 동작하는 원리에 의해, 한 파일에서 하나의 `useStaticQuery` 만 사용 가능하다.
+- `src` 디렉토리 내에 존재해야 한다.
+
+## 참조
+
+[gatsby의 graphql 개념](https://www.gatsbyjs.com/docs/conceptual/graphql-concepts/)
+
+[gatsby는 왜 graphql을 사용하는가](https://www.gatsbyjs.com/docs/why-gatsby-uses-graphql/)
+
+[PageQuery](https://www.gatsbyjs.com/docs/how-to/querying-data/page-query/)
+
+[useStaticQuery](https://www.gatsbyjs.com/docs/how-to/querying-data/use-static-query/)
