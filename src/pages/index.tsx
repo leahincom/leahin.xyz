@@ -25,7 +25,7 @@ export const query = graphql`
           date
           tags
         }
-        body
+        excerpt
       }
     }
   }
@@ -56,6 +56,10 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
     else setSelectedCategory(category);
   };
 
+  /**
+   * @todo
+   * Link, navigate로 query param 동작 제어
+   */
   React.useEffect(() => {
     navigate("/");
   }, []);
@@ -83,9 +87,8 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
             slug={url(post.frontmatter!.category, post.frontmatter!.title)}
             title={post.frontmatter!.title}
             tags={post.frontmatter!.tags}
-            summary={post.body ?? ""}
           >
-            {post.body}
+            {post.excerpt}
           </PostCard>
         ))}
       </Container>
@@ -116,7 +119,7 @@ const Container = styled("section", {
   padding: "2rem 0",
 
   "@md": {
-    gridTemplateColumns: "1fr 1fr",
+    // gridTemplateColumns: "1fr 1fr",
   },
 });
 

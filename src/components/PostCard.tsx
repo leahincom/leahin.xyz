@@ -9,10 +9,9 @@ import { PillBadge } from "./common/Badge";
 type PostCardProps = {
   title: string;
   tags: readonly string[] | null;
-  summary: string;
   slug: string;
 } & PropsWithChildren;
-const PostCard: React.FC<PostCardProps> = ({ title, tags, summary, slug }) => {
+const PostCard: React.FC<PostCardProps> = ({ title, tags, children, slug }) => {
   return (
     <Link to={slug}>
       <Card>
@@ -28,7 +27,7 @@ const PostCard: React.FC<PostCardProps> = ({ title, tags, summary, slug }) => {
               {tag}
             </PillBadge>
           ))}
-        <Body>{summary}</Body>
+        <Body>{children}</Body>
       </Card>
     </Link>
   );
