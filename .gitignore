@@ -6,4 +6,4 @@ node_modules/
 yarn-error.log
 
 public/
-src/gatsby-types.d.ts
+posts/**/*.not.mdx
