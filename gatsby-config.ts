@@ -5,9 +5,9 @@ import type { GatsbyConfig } from "gatsby";
 import { DB_PORT } from "./src/constants";
 
 const siteMetadata = {
-  siteUrl: `https://www.yourdomain.tld`,
-  siteName: `leahin.blog`,
-  title: `leahin.blog`,
+  siteUrl: `https://www.leahin.xyz/`,
+  siteName: `leahin.xyz`,
+  title: `leahin.xyz`,
   description: `nou`,
   author: {
     name: `JungHyunLah`,
