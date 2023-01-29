@@ -61,6 +61,19 @@ const config: GatsbyConfig = {
       __key: "posts",
     },
     {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 590,
+            },
+          },
+        ],
+      },
+    },
+    {
       resolve: "gatsby-source-mongodb",
       options: {
         dbName: process.env.MONGODB_NAME,
