@@ -1,6 +1,9 @@
 import type { HeadProps, PageProps } from "gatsby";
 import { graphql } from "gatsby";
+import { rem } from "polished";
 import React from "react";
+
+import { PillBadge } from "~/components/common/Badge";
 
 import DefaultLayout, { DefaultLayoutHead } from "../layouts/DefaultLayout";
 import { styled } from "../styles/stitches.config";
@@ -29,12 +32,12 @@ const PagePostTemplate: React.FC<PagePostTemplateProps> = ({
     <DefaultLayout>
       <PageTitle>{data.mdx.frontmatter?.title}</PageTitle>
       <Metadata>
-        <p>{data.mdx.frontmatter?.date}</p>
-        <p>
-          {data.mdx.frontmatter?.tags?.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </p>
+        <span>{data.mdx.frontmatter?.date}</span>
+        {data.mdx.frontmatter?.tags?.map((tag) => (
+          <PillBadge key={tag} size="medium" property="basic" variant="fill">
+            {tag}
+          </PillBadge>
+        ))}
       </Metadata>
       <Body>{children}</Body>
     </DefaultLayout>
@@ -62,7 +65,15 @@ const PageTitle = styled("h1", {
   margin: 0,
 });
 
-const Metadata = styled("div", {});
+const Metadata = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  marginTop: rem(8),
+
+  "> span:not(:first-of-type)": {
+    marginLeft: rem(8),
+  },
+});
 
 const Body = styled("section", {
   padding: "4rem 0",
