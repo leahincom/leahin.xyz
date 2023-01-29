@@ -13,8 +13,9 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "gatsby-theme-stitches/src/*": ["./src/styles/*"]
+      "~/*": ["./src/*"],
+      "gatsby-theme-stitches/src/stitches.config.ts": ["./src/styles/stitches.config.ts"]
     }                                
   },
-  "include": ["./*.ts", "./src/**/*", "./plugins/*"]
+  "include": ["./*.ts", "./src/**/*", "./plugins/**/*", "wrapRootElement.tsx"]
 }

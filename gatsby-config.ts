@@ -98,6 +98,15 @@ const config: GatsbyConfig = {
         },
       },
     },
+    {
+      resolve: "gatsby-plugin-module-resolver",
+      options: {
+        root: ".",
+        aliases: {
+          "~": "./src",
+        },
+      },
+    },
   ],
 };
 
