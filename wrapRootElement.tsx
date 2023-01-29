@@ -9,6 +9,7 @@ const basicStyle = {
 };
 
 // https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/#mdxprovider
+// https://github.com/syntax-tree/mdast
 const components = {
   h1: ({ children }: any) => <h1 style={basicStyle}>{children}</h1>,
   h2: ({ children }: any) => <h2 style={basicStyle}>{children}</h2>,
@@ -35,11 +36,14 @@ const components = {
     </span>
   ),
   p: ({ children }: any) => <p style={basicStyle}>{children}</p>,
-  a: ({ children }: any) => (
+  a: ({ children, ...props }: any) => (
     <a
+      {...props}
+      target="_blank"
       style={{
         textDecoration: "none",
         color: vars.$scale.color.blue700,
+        cursor: "pointer",
       }}
     >
       {children}
