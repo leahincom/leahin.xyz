@@ -45,6 +45,9 @@ export const createPages: GatsbyNode["createPages"] = async ({
             title
             category
           }
+          internal {
+            contentFilePath
+          }
         }
       }
     }
@@ -68,7 +71,9 @@ export const createPages: GatsbyNode["createPages"] = async ({
 
     createPage({
       path: slugify(post.frontmatter!.category, post.frontmatter!.title),
-      component: path.resolve("src/templates/post.tsx"),
+      component: `${path.resolve("src/templates/post.tsx")}?__contentFilePath=${
+        post.internal.contentFilePath
+      }`,
       context: { id: post.id, prev, next },
     });
   });

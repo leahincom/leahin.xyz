@@ -19,7 +19,10 @@ export const query = graphql`
 `;
 
 type PagePostTemplateProps = PageProps<Queries.PagePostTemplateQueryQuery>;
-const PagePostTemplate: React.FC<PagePostTemplateProps> = ({ data }) => {
+const PagePostTemplate: React.FC<PagePostTemplateProps> = ({
+  data,
+  children,
+}) => {
   if (!data.mdx) return null;
 
   return (
@@ -33,7 +36,7 @@ const PagePostTemplate: React.FC<PagePostTemplateProps> = ({ data }) => {
           ))}
         </p>
       </Metadata>
-      <Body>{data.mdx.body}</Body>
+      <Body>{children}</Body>
     </DefaultLayout>
   );
 };
@@ -62,5 +65,5 @@ const PageTitle = styled("h1", {
 const Metadata = styled("div", {});
 
 const Body = styled("section", {
-  padding: "1rem 0",
+  padding: "4rem 0",
 });
