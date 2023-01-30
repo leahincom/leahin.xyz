@@ -25670,7 +25670,6 @@ type Query = {
   readonly allImageSharp: ImageSharpConnection;
   readonly allMarkdownRemark: MarkdownRemarkConnection;
   readonly allMdx: MdxConnection;
-  readonly allMongodbBlogPosts: mongodbBlogPostsConnection;
   readonly allSite: SiteConnection;
   readonly allSiteBuildMetadata: SiteBuildMetadataConnection;
   readonly allSiteFunction: SiteFunctionConnection;
@@ -25683,7 +25682,6 @@ type Query = {
   readonly imageSharp: Maybe<ImageSharp>;
   readonly markdownRemark: Maybe<MarkdownRemark>;
   readonly mdx: Maybe<Mdx>;
-  readonly mongodbBlogPosts: Maybe<mongodbBlogPosts>;
   readonly site: Maybe<Site>;
   readonly siteBuildMetadata: Maybe<SiteBuildMetadata>;
   readonly siteFunction: Maybe<SiteFunction>;
@@ -25737,14 +25735,6 @@ type Query_allMdxArgs = {
   limit: InputMaybe<Scalars['Int']>;
   skip: InputMaybe<Scalars['Int']>;
   sort: InputMaybe<ReadonlyArray<InputMaybe<MdxSortInput>>>;
-};
-
-
-type Query_allMongodbBlogPostsArgs = {
-  filter: InputMaybe<mongodbBlogPostsFilterInput>;
-  limit: InputMaybe<Scalars['Int']>;
-  skip: InputMaybe<Scalars['Int']>;
-  sort: InputMaybe<ReadonlyArray<InputMaybe<mongodbBlogPostsSortInput>>>;
 };
 
 
@@ -25921,23 +25911,6 @@ type Query_mdxArgs = {
   internal: InputMaybe<InternalFilterInput>;
   parent: InputMaybe<NodeFilterInput>;
   tableOfContents: InputMaybe<JSONQueryOperatorInput>;
-};
-
-
-type Query_mongodbBlogPostsArgs = {
-  category: InputMaybe<StringQueryOperatorInput>;
-  children: InputMaybe<NodeFilterListInput>;
-  content: InputMaybe<StringQueryOperatorInput>;
-  id: InputMaybe<StringQueryOperatorInput>;
-  internal: InputMaybe<InternalFilterInput>;
-  mongodb_id: InputMaybe<StringQueryOperatorInput>;
-  parent: InputMaybe<NodeFilterInput>;
-  publishedAt: InputMaybe<DateQueryOperatorInput>;
-  status: InputMaybe<StringQueryOperatorInput>;
-  summary: InputMaybe<StringQueryOperatorInput>;
-  tags: InputMaybe<StringQueryOperatorInput>;
-  thumbnailUrl: InputMaybe<StringQueryOperatorInput>;
-  title: InputMaybe<StringQueryOperatorInput>;
 };
 
 
@@ -26831,164 +26804,6 @@ type TransformOptions = {
 
 type WebPOptions = {
   readonly quality: InputMaybe<Scalars['Int']>;
-};
-
-type mongodbBlogPosts = Node & {
-  readonly category: Maybe<Scalars['String']>;
-  readonly children: ReadonlyArray<Node>;
-  readonly content: Maybe<Scalars['String']>;
-  readonly id: Scalars['ID'];
-  readonly internal: Internal;
-  readonly mongodb_id: Maybe<Scalars['String']>;
-  readonly parent: Maybe<Node>;
-  readonly publishedAt: Maybe<Scalars['Date']>;
-  readonly status: Maybe<Scalars['String']>;
-  readonly summary: Maybe<Scalars['String']>;
-  readonly tags: Maybe<ReadonlyArray<Maybe<Scalars['String']>>>;
-  readonly thumbnailUrl: Maybe<Scalars['String']>;
-  readonly title: Maybe<Scalars['String']>;
-};
-
-
-type mongodbBlogPosts_publishedAtArgs = {
-  difference: InputMaybe<Scalars['String']>;
-  formatString: InputMaybe<Scalars['String']>;
-  fromNow: InputMaybe<Scalars['Boolean']>;
-  locale: InputMaybe<Scalars['String']>;
-};
-
-type mongodbBlogPostsConnection = {
-  readonly distinct: ReadonlyArray<Scalars['String']>;
-  readonly edges: ReadonlyArray<mongodbBlogPostsEdge>;
-  readonly group: ReadonlyArray<mongodbBlogPostsGroupConnection>;
-  readonly max: Maybe<Scalars['Float']>;
-  readonly min: Maybe<Scalars['Float']>;
-  readonly nodes: ReadonlyArray<mongodbBlogPosts>;
-  readonly pageInfo: PageInfo;
-  readonly sum: Maybe<Scalars['Float']>;
-  readonly totalCount: Scalars['Int'];
-};
-
-
-type mongodbBlogPostsConnection_distinctArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-
-type mongodbBlogPostsConnection_groupArgs = {
-  field: mongodbBlogPostsFieldSelector;
-  limit: InputMaybe<Scalars['Int']>;
-  skip: InputMaybe<Scalars['Int']>;
-};
-
-
-type mongodbBlogPostsConnection_maxArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-
-type mongodbBlogPostsConnection_minArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-
-type mongodbBlogPostsConnection_sumArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-type mongodbBlogPostsEdge = {
-  readonly next: Maybe<mongodbBlogPosts>;
-  readonly node: mongodbBlogPosts;
-  readonly previous: Maybe<mongodbBlogPosts>;
-};
-
-type mongodbBlogPostsFieldSelector = {
-  readonly category: InputMaybe<FieldSelectorEnum>;
-  readonly children: InputMaybe<NodeFieldSelector>;
-  readonly content: InputMaybe<FieldSelectorEnum>;
-  readonly id: InputMaybe<FieldSelectorEnum>;
-  readonly internal: InputMaybe<InternalFieldSelector>;
-  readonly mongodb_id: InputMaybe<FieldSelectorEnum>;
-  readonly parent: InputMaybe<NodeFieldSelector>;
-  readonly publishedAt: InputMaybe<FieldSelectorEnum>;
-  readonly status: InputMaybe<FieldSelectorEnum>;
-  readonly summary: InputMaybe<FieldSelectorEnum>;
-  readonly tags: InputMaybe<FieldSelectorEnum>;
-  readonly thumbnailUrl: InputMaybe<FieldSelectorEnum>;
-  readonly title: InputMaybe<FieldSelectorEnum>;
-};
-
-type mongodbBlogPostsFilterInput = {
-  readonly category: InputMaybe<StringQueryOperatorInput>;
-  readonly children: InputMaybe<NodeFilterListInput>;
-  readonly content: InputMaybe<StringQueryOperatorInput>;
-  readonly id: InputMaybe<StringQueryOperatorInput>;
-  readonly internal: InputMaybe<InternalFilterInput>;
-  readonly mongodb_id: InputMaybe<StringQueryOperatorInput>;
-  readonly parent: InputMaybe<NodeFilterInput>;
-  readonly publishedAt: InputMaybe<DateQueryOperatorInput>;
-  readonly status: InputMaybe<StringQueryOperatorInput>;
-  readonly summary: InputMaybe<StringQueryOperatorInput>;
-  readonly tags: InputMaybe<StringQueryOperatorInput>;
-  readonly thumbnailUrl: InputMaybe<StringQueryOperatorInput>;
-  readonly title: InputMaybe<StringQueryOperatorInput>;
-};
-
-type mongodbBlogPostsGroupConnection = {
-  readonly distinct: ReadonlyArray<Scalars['String']>;
-  readonly edges: ReadonlyArray<mongodbBlogPostsEdge>;
-  readonly field: Scalars['String'];
-  readonly fieldValue: Maybe<Scalars['String']>;
-  readonly group: ReadonlyArray<mongodbBlogPostsGroupConnection>;
-  readonly max: Maybe<Scalars['Float']>;
-  readonly min: Maybe<Scalars['Float']>;
-  readonly nodes: ReadonlyArray<mongodbBlogPosts>;
-  readonly pageInfo: PageInfo;
-  readonly sum: Maybe<Scalars['Float']>;
-  readonly totalCount: Scalars['Int'];
-};
-
-
-type mongodbBlogPostsGroupConnection_distinctArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-
-type mongodbBlogPostsGroupConnection_groupArgs = {
-  field: mongodbBlogPostsFieldSelector;
-  limit: InputMaybe<Scalars['Int']>;
-  skip: InputMaybe<Scalars['Int']>;
-};
-
-
-type mongodbBlogPostsGroupConnection_maxArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-
-type mongodbBlogPostsGroupConnection_minArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-
-type mongodbBlogPostsGroupConnection_sumArgs = {
-  field: mongodbBlogPostsFieldSelector;
-};
-
-type mongodbBlogPostsSortInput = {
-  readonly category: InputMaybe<SortOrderEnum>;
-  readonly children: InputMaybe<NodeSortInput>;
-  readonly content: InputMaybe<SortOrderEnum>;
-  readonly id: InputMaybe<SortOrderEnum>;
-  readonly internal: InputMaybe<InternalSortInput>;
-  readonly mongodb_id: InputMaybe<SortOrderEnum>;
-  readonly parent: InputMaybe<NodeSortInput>;
-  readonly publishedAt: InputMaybe<SortOrderEnum>;
-  readonly status: InputMaybe<SortOrderEnum>;
-  readonly summary: InputMaybe<SortOrderEnum>;
-  readonly tags: InputMaybe<SortOrderEnum>;
-  readonly thumbnailUrl: InputMaybe<SortOrderEnum>;
-  readonly title: InputMaybe<SortOrderEnum>;
 };
 
 type GatsbyImageSharpFixedFragment = { readonly base64: string | null, readonly width: number, readonly height: number, readonly src: string, readonly srcSet: string };

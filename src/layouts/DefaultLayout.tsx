@@ -12,11 +12,8 @@ import React from "react";
 import logoPath from "../assets/images/icon.png";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import globalStyles from "../styles/global";
 
 const DefaultLayout: React.FC<PropsWithChildren> = ({ children }) => {
-  globalStyles();
-
   return (
     <>
       <Header />
