@@ -2,17 +2,16 @@ import type { HeadProps, PageProps } from "gatsby";
 import { navigate } from "gatsby";
 import { Link } from "gatsby";
 import { graphql } from "gatsby";
-import _ from "lodash";
 import { rem } from "polished";
 import * as React from "react";
 import slugify from "slugify";
 
-import { PillBadge } from "../../src/components/common/Badge";
-import PostCard from "../components/PostCard";
-import { useSiteMetadata } from "../hooks/useSiteMetadata";
-import DefaultLayout, { DefaultLayoutHead } from "../layouts/DefaultLayout";
-import { styled } from "../styles/stitches.config";
-import url from "../utils/url";
+import { PillBadge } from "~/components/common/Badge";
+import PostCard from "~/components/PostCard";
+import { useSiteMetadata } from "~/hooks/useSiteMetadata";
+import DefaultLayout, { DefaultLayoutHead } from "~/layouts/DefaultLayout";
+import { styled } from "~/styles/stitches.config";
+import url from "~/utils/url";
 
 export const query = graphql`
   query IndexPageQuery {
@@ -34,12 +33,10 @@ export const query = graphql`
 type IndexPageProps = PageProps<Queries.IndexPageQueryQuery>;
 const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
   const [selectedCategory, setSelectedCategory] = React.useState<
-    string | undefined
+    Queries.CategoryEnum | undefined
   >();
 
-  const categories = _.uniq(
-    data.allMdx.nodes.map((node) => node.frontmatter!.category),
-  );
+  const categories: Queries.CategoryEnum[] = ["ABOUT", "SNACKS", "TECH"];
 
   const selectedPosts = React.useMemo(() => {
     return !selectedCategory
@@ -51,7 +48,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
         );
   }, [selectedCategory]);
 
-  const handleClick = (category: string) => () => {
+  const handleClick = (category: Queries.CategoryEnum) => () => {
     if (category === selectedCategory) setSelectedCategory(undefined);
     else setSelectedCategory(category);
   };
