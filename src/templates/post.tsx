@@ -4,9 +4,8 @@ import { rem } from "polished";
 import React from "react";
 
 import { PillBadge } from "~/components/common/Badge";
-
-import DefaultLayout, { DefaultLayoutHead } from "../layouts/DefaultLayout";
-import { styled } from "../styles/stitches.config";
+import DefaultLayout, { DefaultLayoutHead } from "~/layouts/DefaultLayout";
+import { styled } from "~/styles/stitches.config";
 
 export const query = graphql`
   query PagePostTemplateQuery($id: String!) {
@@ -14,7 +13,7 @@ export const query = graphql`
       frontmatter {
         title
         date
-        tags
+        category
       }
       body
     }
@@ -33,11 +32,14 @@ const PagePostTemplate: React.FC<PagePostTemplateProps> = ({
       <PageTitle>{data.mdx.frontmatter?.title}</PageTitle>
       <Metadata>
         <span>{data.mdx.frontmatter?.date}</span>
-        {data.mdx.frontmatter?.tags?.map((tag) => (
-          <PillBadge key={tag} size="medium" property="basic" variant="fill">
-            {tag}
-          </PillBadge>
-        ))}
+        <PillBadge
+          key={data.mdx.frontmatter?.category}
+          size="medium"
+          property="basic"
+          variant="fill"
+        >
+          {data.mdx.frontmatter?.category}
+        </PillBadge>
       </Metadata>
       <Body>{children}</Body>
     </DefaultLayout>
