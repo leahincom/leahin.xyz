@@ -2,9 +2,9 @@ import { graphql, Link, useStaticQuery } from "gatsby";
 import { padding, rem } from "polished";
 import React from "react";
 
-import { ReactComponent as LinkedInSvg } from "../assets/images/linkedin.svg";
-import { ReactComponent as LogoSvg } from "../assets/images/logo.svg";
-import { styled } from "../styles/stitches.config";
+import { ReactComponent as LinkedInSvg } from "~/assets/images/linkedin.svg";
+import { ReactComponent as LogoSvg } from "~/assets/images/logo.svg";
+import { styled } from "~/styles/stitches.config";
 
 type HeaderProps = {
   className?: string;

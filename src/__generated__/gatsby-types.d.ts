@@ -26847,7 +26847,7 @@ type PagePostTemplateQueryQueryVariables = Exact<{
 }>;
 
 
-type PagePostTemplateQueryQuery = { readonly mdx: { readonly body: string | null, readonly frontmatter: { readonly title: string, readonly date: string | null, readonly tags: ReadonlyArray<string> | null } | null } | null };
+type PagePostTemplateQueryQuery = { readonly mdx: { readonly body: string | null, readonly frontmatter: { readonly title: string, readonly date: string | null, readonly category: CategoryEnum } | null } | null };
 
 type useSiteMetadataQueryQueryVariables = Exact<{ [key: string]: never; }>;
 

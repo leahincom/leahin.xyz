@@ -9,9 +9,9 @@ import { SocialProfileJsonLd } from "gatsby-plugin-head-seo/src/jsonld";
 import type { PropsWithChildren } from "react";
 import React from "react";
 
-import logoPath from "../assets/images/icon.png";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+import logoPath from "~/assets/images/icon.png";
+import Footer from "~/components/Footer";
+import Header from "~/components/Header";
 
 const DefaultLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (

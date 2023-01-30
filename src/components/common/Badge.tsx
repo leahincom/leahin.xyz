@@ -1,7 +1,7 @@
 import { vars } from "@seed-design/design-token";
 
-import { styled } from "../../styles/stitches.config";
-import { textStyles } from "../../styles/text";
+import { styled } from "~/styles/stitches.config";
+import { textStyles } from "~/styles/text";
 
 // https://www.figma.com/file/ty7UxJ61CVPeVU2Gf1LJGQ/App-Components?node-id=77%3A54&t=eO5LCUTFdrq9yD7a-0
 type BadgeSize = "large" | "medium" | "small";

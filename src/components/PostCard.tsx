@@ -3,7 +3,8 @@ import { rem } from "polished";
 import type { PropsWithChildren } from "react";
 import React from "react";
 
-import { styled } from "../styles/stitches.config";
+import { styled } from "~/styles/stitches.config";
+
 import { PillBadge } from "./common/Badge";
 
 type PostCardProps = {

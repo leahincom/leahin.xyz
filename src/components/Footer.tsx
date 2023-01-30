@@ -1,7 +1,7 @@
 import { vars } from "@seed-design/design-token";
 import React from "react";
 
-import { styled } from "../styles/stitches.config";
+import { styled } from "~/styles/stitches.config";
 
 export default function Footer() {
   return (
