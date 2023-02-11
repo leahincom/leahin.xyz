@@ -17,5 +17,5 @@
       "gatsby-theme-stitches/src/stitches.config.ts": ["./src/styles/stitches.config.ts"]
     }                                
   },
-  "include": ["./*.ts", "./src/**/*", "./plugins/**/*", "wrapRootElement.tsx"]
+  "include": ["./*.ts", "./*.tsx", "./src/**/*", "./plugins/**/*"]
 }

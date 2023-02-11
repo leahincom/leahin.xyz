@@ -16,6 +16,9 @@ const siteMetadata = {
 };
 
 const config: GatsbyConfig = {
+  flags: {
+    DEV_SSR: true,
+  },
   jsxRuntime: "automatic",
   graphqlTypegen: {
     typesOutputPath: "./src/__generated__/gatsby-types.d.ts",
@@ -91,6 +94,14 @@ const config: GatsbyConfig = {
           ssl: true,
           authSource: "admin",
           retryWrites: true,
+        },
+      },
+    },
+    {
+      resolve: "gatsby-plugin-web-font-loader",
+      options: {
+        google: {
+          families: ["Montserrat"],
         },
       },
     },

@@ -4,8 +4,6 @@ import type { GatsbyBrowser, GatsbySSR } from "gatsby";
 import { margin, rem } from "polished";
 import React from "react";
 
-import globalStyles from "./src/styles/global";
-
 const basicStyle = {
   ...margin("2rem", 0, rem(8)),
 };
@@ -53,9 +51,8 @@ const components = {
   ),
 };
 
-type WrapRootElement = (GatsbySSR | GatsbyBrowser)["wrapRootElement"];
-export const wrapRootElement: WrapRootElement = ({ element }: any) => {
-  globalStyles();
+type WrapPageElement = (GatsbySSR | GatsbyBrowser)["wrapPageElement"];
 
+export const wrapPageElement: WrapPageElement = ({ element }: any) => {
   return <MDXProvider components={components}>{element}</MDXProvider>;
 };

@@ -2,6 +2,11 @@ import { createStitches } from "@stitches/react";
 import { em } from "polished";
 
 const stitches = createStitches({
+  theme: {
+    fonts: {
+      Montserrat: "Montserrat",
+    },
+  },
   // follows Bootstrap's breakpoints practice
   // See https://getbootstrap.com/docs/5.0/layout/breakpoints/#available-breakpoints
   media: {

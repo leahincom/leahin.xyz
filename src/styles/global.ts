@@ -11,6 +11,7 @@ const globalStyles = globalCss({
     fontFamily: "Montserrat",
   },
   body: {
+    fontFamily: "Montserrat",
     background: vars.$semantic.color.paperDefault,
     color: vars.$scale.color.gray900,
     textRendering: "optimizeLegibility",
